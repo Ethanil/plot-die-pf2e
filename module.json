@@ -1,16 +1,17 @@
 {
-  "id": "module",
-  "title": "New Module",
-  "description": "",
-  "version": "#{VERSION}#",
+  "id": "plot-die-pf2e",
+  "title": "Plot Die for PF2e",
+  "description": "Adds Stormlight Archive's Plot Die to PF2e",
+  "version": "0.1.0",
   "library": "false",
-  "manifestPlusVersion": "1.2.0",
   "compatibility": {
-    "minimum": 10,
-    "verified": 10,
-    "maximum": 11
+    "minimum": 12,
+    "verified": 12
   },
   "authors": [
+    {
+      "name": "Ethanil"
+    },
     {
       "name": "The League of Extraordinary FVTT Developers",
       "url": "https://github.com/League-of-Foundry-Developers",
@@ -18,8 +19,22 @@
     }
   ],
   "relationships": {
-    "systems": [],
-    "requires": []
+    "systems": [
+      {
+        "id": "pf2e",
+        "type": "system"
+      }
+    ],
+    "requires": [
+      {
+        "id": "lib-wrapper",
+        "type": "module",
+        "compatibility": {
+          "minimum": "1.0.0.0",
+          "verified": "1.12.6.0"
+        }
+      }
+    ]
   },
   "esmodules": [
     "scripts/module.js"
@@ -37,9 +52,7 @@
       "path": "languages/en.json"
     }
   ],
-  "url": "#{URL}#",
-  "manifest": "#{MANIFEST}#",
-  "download": "#{DOWNLOAD}#",
+  "url": "https://github.com/Ethanil/plot-die-pf2e",
   "license": "LICENSE",
   "readme": "README.md",
   "media": [

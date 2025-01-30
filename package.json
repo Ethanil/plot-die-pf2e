@@ -1,0 +1,15 @@
+{
+  "name": "plot-die-pf2e",
+  "version": "1.0.0",
+  "description": "![](https://img.shields.io/badge/Foundry-v10-informational)\r <!--- Downloads @ Latest Badge -->\r <!--- replace <user>/<repo> with your username/repository -->\r <!--- ![Latest Release Download Count](https://img.shields.io/github/downloads/<user>/<repo>/latest/module.zip) -->",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "@league-of-foundry-developers/foundry-vtt-types": "^12.331.3-beta"
+  }
+}

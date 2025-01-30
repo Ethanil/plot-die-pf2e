@@ -1,0 +1,33 @@
+# --- Foundry VTT ---
+/foundrydata/
+*.log
+.env
+
+# --- Dependencies ---
+node_modules/
+package-lock.json
+yarn.lock
+
+# --- Build/Output ---
+dist/
+*.tsbuildinfo
+
+# --- OS/Editor ---
+.DS_Store
+thumbs.db
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# --- Temporary Files ---
+temp/
+*.tmp
+
+# --- Testing ---
+coverage/
+test-output/
+
+# --- Module-Specific ---
+# Ignore local symlinks (if you have any)
+/module
