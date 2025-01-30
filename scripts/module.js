@@ -96,7 +96,6 @@ const modifyRollTerms = (roll, bonus) => {
       new foundry.dice.terms.NumericTerm({ number: bonus })
     );
   }
-
   roll._formula = Roll.getFormula(roll.terms);
 };
 
@@ -106,7 +105,7 @@ const createPlotDieMessage = (rollResult) => {
     rolls: [rollResult],
     flavor: "",
     speaker: { alias: "The Fate" },
-    content: "",
+    content: "<div></div>",
   };
 
   if ([1, 2].includes(rollResult.total)) {
@@ -124,12 +123,52 @@ const createPlotDieMessage = (rollResult) => {
 
 Hooks.on("renderCheckModifiersDialog", handleCheckModifiersDialogRender);
 
+export class DiePlot extends foundry.dice.terms.Die {
+  constructor(termData ) {
+      termData.faces=6;
+      super(termData);
+  }
+
+  /** @override */
+  static DENOMINATION = "p";
+
+}
+Hooks.once("init", async function () {
+  CONFIG.Dice.terms["p"] = DiePlot;
+});
+
+
+
+Hooks.once("diceSoNiceReady", (dice3d) => {
+  dice3d.addSystem({id:"plot",name:"Plot"},"preferred");
+  dice3d.addDicePreset({
+    type: "dp",
+    labels: [
+      'modules/plot-die-pf2e/dsn/dice-images/face1.png',
+      'modules/plot-die-pf2e/dsn/dice-images/face2.png',
+      'modules/plot-die-pf2e/dsn/dice-images/face3.png',
+      'modules/plot-die-pf2e/dsn/dice-images/face3.png',
+      'modules/plot-die-pf2e/dsn/dice-images/face5.png',
+      'modules/plot-die-pf2e/dsn/dice-images/face5.png'
+    ],
+    bumpMaps: [
+      'modules/plot-die-pf2e/dsn/dice-bumps/face1.png',
+      'modules/plot-die-pf2e/dsn/dice-bumps/face2.png',
+      'modules/plot-die-pf2e/dsn/dice-bumps/face3.png',
+      'modules/plot-die-pf2e/dsn/dice-bumps/face3.png',
+      'modules/plot-die-pf2e/dsn/dice-bumps/face5.png',
+      'modules/plot-die-pf2e/dsn/dice-bumps/face5.png'
+    ],
+    system: "plot",
+
+  });
+});
 Hooks.once("init", async function () {
   libWrapper.register(
     "plot-die-pf2e",
     "game.pf2e.Check.roll",
     async function (original, ...args) {
-      var plot_die_roll = await new Roll("1d6[plot]").roll();
+      var plot_die_roll = await new Roll("1dp").roll();
       try {
         libWrapper.register(
           "plot-die-pf2e",
