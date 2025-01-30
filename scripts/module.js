@@ -123,21 +123,6 @@ const createPlotDieMessage = (rollResult) => {
 };
 
 Hooks.on("renderCheckModifiersDialog", handleCheckModifiersDialogRender);
-// Hooks.on("renderCheckModifiersDialog", (app, html, data) => {
-//   if(html[0].classList.contains("roll-modifiers-dialog")){
-//     plotDieActive = false;
-//   }
-
-//   var dialog = $(".roll-modifiers-dialog");
-//   const checkbox = `<div class="form-group">
-//     <label><input type="checkbox" name="plotDie" ${plotDieActive ? "checked" : ""}> Plot Die</label>
-//   </div>`;
-//   dialog.find(".roll-mode-panel").after(checkbox);
-//   dialog.find('[name="plotDie"]').on("change", (event) => {
-//     plotDieActive = event.target.checked;
-//   });
-//   dialog.css("height", "auto");
-// });
 
 Hooks.once("init", async function () {
   libWrapper.register(
@@ -162,57 +147,6 @@ Hooks.once("init", async function () {
           },
           "WRAPPER"
         );
-        // libWrapper.register(
-        //   "plot-die-pf2e",
-        //   "Roll.prototype.evaluate",
-        //   function evaluate(wrapped, options = {}) {
-        //     if (
-        //       !plotDieActive ||
-        //       (plot_die_roll._total != 1 && plot_die_roll._total != 2)
-        //     ) {
-        //       return wrapped(options);
-        //     }
-        //     var bonus = plot_die_roll._total * 2;
-        //     if (
-        //       this.terms.length === 3 &&
-        //       this.terms[1] instanceof foundry.dice.terms.OperatorTerm &&
-        //       this.terms[2] instanceof foundry.dice.terms.NumericTerm
-        //     ) {
-        //       var number = this.terms[2].number;
-        //       if (this.terms[1].operator === "+") {
-        //         number += bonus;
-        //       } else {
-        //         number = number - bonus;
-        //         if (number < 0) {
-        //           number = abs(number);
-        //           this.terms[1].operator = "+";
-        //         }
-        //       }
-        //       this.terms[2].number = number;
-        //       if (number === 0) {
-        //         this.terms = this.terms.slice(0, 1);
-        //       }
-        //     } else {
-        //       this.terms.push(
-        //         new foundry.dice.terms.OperatorTerm({ operator: "+" })
-        //       );
-        //       this.terms.push(
-        //         new foundry.dice.terms.NumericTerm({
-        //           number: bonus,
-        //         })
-        //       );
-        //     }
-
-        //     this._formula = this.constructor.getFormula(this.terms);
-        //     this._plotDieFlavor = document.createElement("span");
-        //     this._plotDieFlavor.className = "tag tag_transparent";
-        //     this._plotDieFlavor.dataset.slug = "complication";
-        //     this._plotDieFlavor.dataset.visibility = "owner";
-        //     this._plotDieFlavor.textContent = `Complication +${bonus}`;
-        //     return wrapped(options);
-        //   },
-        //   "WRAPPER"
-        // );
         libWrapper.register(
           "plot-die-pf2e",
           "Roll.prototype.toMessage",
@@ -245,108 +179,11 @@ Hooks.once("init", async function () {
           },
           "WRAPPER"
         );
-        // libWrapper.register(
-        //   "plot-die-pf2e",
-        //   "Roll.prototype.toMessage",
-        //   function (wrapped, messageData = {}, options) {
-        //     if (this._plotDieFlavor) {
-        //       const parser = new DOMParser();
-        //       const doc = parser.parseFromString(
-        //         messageData.flavor || "",
-        //         "text/html"
-        //       );
-        //       let modifiersDiv = doc.querySelector(".tags.modifiers");
-        //       if (!modifiersDiv) {
-        //         modifiersDiv = doc.createElement("div");
-        //         modifiersDiv.className = "tags modifiers";
-        //         doc.body.appendChild(modifiersDiv);
-        //       }
-        //       modifiersDiv.appendChild(this._plotDieFlavor);
-        //       messageData.flavor = doc.body.innerHTML;
-        //       messageData.flags.pf2e.modifiers.push({
-        //         ability: null,
-        //         adjustments: [],
-        //         critical: null,
-        //         custom: false,
-        //         damageCategory: null,
-        //         damageType: null,
-        //         domains: [],
-        //         enabled: true,
-        //         force: false,
-        //         hideIfDisabled: false,
-        //         ignored: false,
-        //         kind: "modifier",
-        //         label: "Complication",
-        //         modifier: plot_die_roll._total * 2,
-        //         predicate: [],
-        //         slug: "complication",
-        //         source: null,
-        //         tags: [],
-        //         type: "fate",
-        //       });
-        //     }
-        //     return wrapped(messageData, options);
-        //   },
-        //   "MIXED"
-        // );
         const result = await original(...args);
         if (result && plotDieActive) {
           await ChatMessage.create(createPlotDieMessage(plot_die_roll));
         }
         return result;
-
-        //       var result = original(...args);
-        //       var result2 = result
-        //         .then(async (res) => {
-        //           if (res == null || !plotDieActive) return res;
-        //           var chatData = {
-        //             rolls: [plot_die_roll],
-        //             flavor: "",
-        //             speaker: { alias: "The Fate" },
-        //           };
-        //           switch (plot_die_roll._total) {
-        //             case 1:
-        //             case 2:
-        //               chatData.flavor = "A Complication occurs!";
-        //               chatData.content = `
-        // 					<div class="my-cool-message">
-        // 					<strong>Choose one of the following effects:</strong><br>
-        // 					<ul>
-        // 						<li><strong>Hinder an Ally:</strong> Your actions have unforeseen repercussions. The next test taken by a PC gains a disadvantage.</li>
-        // 						<li><strong>Become Distracted:</strong> You lose 1 focus.</li>
-        // 						<li><strong>Influence the Narrative:</strong> Your actions result in a narrative drawback of the GM’s choice. This effect occurs regardless of whether the test succeeds or fails.</li>
-        // 					</ul>
-        // 					</div>
-        // 					`;
-        //               break;
-        //             case 5:
-        //             case 6:
-        //               chatData.flavor = "You get an Opportunity!";
-        //               chatData.content = `
-        // 					<div class="my-cool-message">
-        // 					<strong>Choose one of the following effects:</strong><br>
-        // 					<ul>
-        // 						<li><strong>Aid An Ally:</strong> Thanks to your actions, the next test made by an ally of your choice gains an advantage.</li>
-        // 						<li><strong>Collect Yourself:</strong> You recover 1 focus.</li>
-        // 						<li><strong>Critically Hit:</strong> You change a hit into a critical hit (see “Attacking” in Part 5). You can only use this effect on attack tests.</li>
-        // 						<li><strong>Influence the Narrative:</strong> Your actions result in a positive narrative effect of your choice, which the GM must approve. This effect occurs regardless of whether the test succeeds or fails</li>
-        // 					</ul>
-        // 					</div>
-        // `;
-        //               break;
-        //             default:
-        //               chatData.flavor = "Nothing special happens";
-        //               chatData.content = "";
-        //           }
-        //           ChatMessage.create(chatData);
-        //           return res;
-        //         })
-        //         .finally(() => {
-        //           libWrapper.unregister("plot-die-pf2e", "Roll.prototype.evaluate");
-        //           libWrapper.unregister("plot-die-pf2e", "Roll.prototype.toMessage");
-        //         });
-
-        //       return result2;
       } finally {
         libWrapper.unregister("plot-die-pf2e", "Roll.prototype.evaluate");
         libWrapper.unregister("plot-die-pf2e", "Roll.prototype.toMessage");
