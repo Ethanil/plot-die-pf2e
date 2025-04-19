@@ -2,7 +2,7 @@
   "id": "plot-die-pf2e",
   "title": "Plot Die for PF2e",
   "description": "Adds Cosmere RPG's Plot Die to PF2e",
-  "version": "0.1.0",
+  "version": "1.1.0",
   "library": "false",
   "compatibility": {
     "minimum": 12,
@@ -43,6 +43,20 @@
       "url": "https://avatars2.githubusercontent.com/u/71292812?s=400&u=ccdb4eeb7abf551ca8f314e5a9bfd0479a4d3d41&v=4"
     }
   ],
+  "packs": [
+    {
+      "name": "plot-die-results",
+      "label": "Plot Die Results",
+      "path": "packs/plot-die-results",
+      "type": "JournalEntry",
+      "ownership": {
+        "PLAYER": "OBSERVER",
+        "ASSISTANT": "OWNER"
+      },
+      "system": "pf2e",
+      "flags": {}
+    }
+  ],
   "manifest": "https://github.com/Ethanil/plot-die-pf2e/releases/latest/download/module.json",
-  "download": "https://github.com/Ethanil/plot-die-pf2e/releases/download/1.0/module.zip"
+  "download": "https://github.com/Ethanil/plot-die-pf2e/releases/download/1.1/module.zip"
 }

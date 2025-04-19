@@ -14,6 +14,8 @@ function PLOT_DIE_CHECKBOX(dieActive) {
 `;
 }
 
+
+
 const COMPLICATION_CONTENT = `
   <div class="my-cool-message">
     <strong>Choose one of the following effects:</strong><br>
@@ -99,8 +101,25 @@ const modifyRollTerms = (roll, bonus) => {
   roll._formula = Roll.getFormula(roll.terms);
 };
 
+const loadMessageInPack = async (type) => {
+  var content = ""
+  const pack = game.packs.get("plot-die-pf2e.plot-die-results");
+  const entry = await pack.getDocuments().then(entries => entries.find((entry => entry.name === type)));
+  entry.pages.forEach(p => {
+    content += p?.text.content;
+  });
+  if (content != ""){
+    content = `
+    <div class="my-cool-message">
+    `+content+`
+    </div>
+    `
+  }
+  return content
+}
+
 // Chat Message Handling
-const createPlotDieMessage = (rollResult) => {
+const createPlotDieMessage = async (rollResult) => {
   const message = {
     rolls: [rollResult],
     flavor: "",
@@ -110,14 +129,13 @@ const createPlotDieMessage = (rollResult) => {
 
   if ([1, 2].includes(rollResult.total)) {
     message.flavor = "A Complication occurs!";
-    message.content = COMPLICATION_CONTENT;
+    message.content = await loadMessageInPack("Complication") || COMPLICATION_CONTENT;
   } else if ([5, 6].includes(rollResult.total)) {
     message.flavor = "You get an Opportunity!";
-    message.content = OPPORTUNITY_CONTENT;
+    message.content = await loadMessageInPack("Opportunity") || OPPORTUNITY_CONTENT;
   } else {
     message.flavor = "Nothing special happens";
   }
-
   return message;
 };
 
@@ -220,7 +238,7 @@ Hooks.once("init", async function () {
         );
         const result = await original(...args);
         if (result && plotDieActive) {
-          await ChatMessage.create(createPlotDieMessage(plot_die_roll));
+          await ChatMessage.create(await createPlotDieMessage(plot_die_roll));
         }
         return result;
       } finally {
